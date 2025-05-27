@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import Pokemon from "@/model/pokemon";
-import styles from "./PokemonGoCard.module.css";
+import styles from "./Pokemon.module.css";
 
 type Props = {
   pokemon: Pokemon;
