@@ -1,126 +1,80 @@
 import { Fragment } from "react";
 import Pokemon from "@/model/pokemon";
-import {
-  Card,
-  Row,
-  Col,
-  Badge,
-  ProgressBar,
-  ListGroup,
-  Container,
-} from "react-bootstrap";
-import styles from "./PokemonComponent.module.css"; // Custom CSS module
+import styles from "./PokemonGoCard.module.css";
 
 type Props = {
   pokemon: Pokemon;
 };
 
 const typeColors: Record<string, string> = {
-  Fire: "danger",
-  Water: "primary",
-  Grass: "success",
-  Electric: "warning",
-  Psychic: "info",
-  Ice: "info",
-  Ground: "secondary",
-  Rock: "dark",
-  Flying: "primary",
-  Bug: "success",
-  Normal: "secondary",
-  Fighting: "danger",
-  Ghost: "dark",
-  Poison: "secondary",
-  Dark: "dark",
-  Dragon: "primary",
-  Steel: "secondary",
-  Fairy: "pink",
+  Fire: "#fd7d24",
+  Water: "#4592c4",
+  Grass: "#9bcc50",
+  Electric: "#eed535",
+  Psychic: "#f366b9",
+  Ice: "#51c4e7",
+  Fairy: "#fdb9e9",
+  Dark: "#707070",
+  Ghost: "#7b62a3",
+  Normal: "#a4acaf",
 };
 
 export default function PokemonComponent({ pokemon }: Props) {
   return (
-    <Container className="mt-5">
-      <Card className="shadow rounded-4 p-3">
-        <Card.Body>
-          <Row className="align-items-center">
-            <Col
-              xs={12}
-              md={4}
-              className="d-flex justify-content-center mb-3 mb-md-0"
-            >
-              <div className={styles.imageCircle}>
-                <img
-                  src={pokemon.mainImage}
-                  alt={pokemon.pokemonName}
-                  className={styles.image}
-                />
-              </div>
-            </Col>
-            <Col md={8}>
-              <h2 className="display-5">{pokemon.pokemonName}</h2>
-              <div className="mb-2">
-                {pokemon.pokemonType.map((type) => (
-                  <Badge
-                    key={type}
-                    bg={typeColors[type] || "secondary"}
-                    className="me-2"
-                  >
-                    {type}
-                  </Badge>
-                ))}
-              </div>
-            </Col>
-          </Row>
-
-          {/* Stats Section */}
-          <ListGroup variant="flush" className="mt-4">
-            {[
-              { label: "HP", value: pokemon.healthPoints, variant: "success" },
-              { label: "Attack", value: pokemon.attack, variant: "danger" },
-              { label: "Defense", value: pokemon.defense, variant: "info" },
-              { label: "Speed", value: pokemon.speed, variant: "warning" },
-            ].map((stat) => (
-              <ListGroup.Item key={stat.label}>
-                <strong>{stat.label}:</strong>
-                <ProgressBar
-                  now={stat.value}
-                  max={255}
-                  label={`${stat.value}`}
-                  className="mt-1"
-                  variant={stat.variant}
-                  animated
-                />
-              </ListGroup.Item>
+    <div className={styles.container}>
+        <div className={styles.card}>
+            <div className={styles.glow} />
+            <div className={styles.imageWrapper}>
+            <img
+                src={pokemon.mainImage}
+                alt={pokemon.pokemonName}
+                className={styles.pokemonImage}
+            />
+            </div>
+            <h1 className={styles.title}>{pokemon.pokemonName}</h1>
+            <div className={styles.types}>
+            {pokemon.pokemonType.map((type) => (
+                <span
+                key={type}
+                className={styles.badge}
+                style={{ backgroundColor: typeColors[type] || "#ccc" }}
+                >
+                {type}
+                </span>
             ))}
-          </ListGroup>
+            </div>
 
-          {/* Evolution */}
-          <Row className="mt-4">
-            <Col>
-              <h5>Evolution Chain</h5>
-              <p className="fs-6">
-                {pokemon.evolutionFamily.map((name, idx) => (
-                  <Fragment key={name}>
-                    <Badge bg="secondary" className="me-1">
-                      {name}
-                    </Badge>
+            <div className={styles.stats}>
+            {["healthPoints", "attack", "defense", "speed"].map((key) => (
+                <div key={key} className={styles.stat}>
+                <span className={styles.label}>{key.toUpperCase()}</span>
+                <div className={styles.bar}>
+                    <div
+                    className={styles.fill}
+                    style={{
+                        width: `${Math.min((pokemon as any)[key] / 2.5, 100)}%`,
+                    }}
+                    />
+                </div>
+                <span className={styles.value}>{(pokemon as any)[key]}</span>
+                </div>
+            ))}
+            </div>
+
+            <div className={styles.evolution}>
+            <h3>Evolution Chain</h3>
+            <div className={styles.evolutionRow}>
+                {pokemon.evolutionFamily.map((evo, idx) => (
+                <Fragment key={evo}>
+                    <span className={styles.evoItem}>{evo}</span>
                     {idx < pokemon.evolutionFamily.length - 1 && (
-                      <span className="me-1">➝</span>
+                    <span className={styles.arrow}>➜</span>
                     )}
-                  </Fragment>
+                </Fragment>
                 ))}
-              </p>
-              <p className="text-muted">
-                <strong>Devolution:</strong>{" "}
-                {pokemon.devolution || <span>—</span>}
-              </p>
-              <p className="text-muted">
-                <strong>Evolution:</strong>{" "}
-                {pokemon.evolution || <span>—</span>}
-              </p>
-            </Col>
-          </Row>
-        </Card.Body>
-      </Card>
-    </Container>
+            </div>
+            </div>
+        </div>
+    </div>
   );
 }
