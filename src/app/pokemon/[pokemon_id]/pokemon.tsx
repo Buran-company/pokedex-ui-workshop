@@ -4,12 +4,12 @@ import {
   Card,
   Row,
   Col,
-  Image,
   Badge,
   ProgressBar,
   ListGroup,
   Container,
 } from "react-bootstrap";
+import styles from "./PokemonComponent.module.css"; // Custom CSS module
 
 type Props = {
   pokemon: Pokemon;
@@ -29,31 +29,35 @@ const typeColors: Record<string, string> = {
   Normal: "secondary",
   Fighting: "danger",
   Ghost: "dark",
-  Poison: "purple",
+  Poison: "secondary",
   Dark: "dark",
-  Dragon: "indigo",
+  Dragon: "primary",
   Steel: "secondary",
   Fairy: "pink",
 };
 
 export default function PokemonComponent({ pokemon }: Props) {
   return (
-    <Container className="mt-4">
-      <Card className="shadow-lg rounded-4">
+    <Container className="mt-5">
+      <Card className="shadow rounded-4 p-3">
         <Card.Body>
-          {/* Header and Image */}
           <Row className="align-items-center">
-            <Col md={4} className="text-center mb-3 mb-md-0">
-              <Image
-                src={pokemon.mainImage}
-                fluid
-                roundedCircle
-                style={{ maxHeight: "200px" }}
-              />
+            <Col
+              xs={12}
+              md={4}
+              className="d-flex justify-content-center mb-3 mb-md-0"
+            >
+              <div className={styles.imageCircle}>
+                <img
+                  src={pokemon.mainImage}
+                  alt={pokemon.pokemonName}
+                  className={styles.image}
+                />
+              </div>
             </Col>
             <Col md={8}>
               <h2 className="display-5">{pokemon.pokemonName}</h2>
-              <div>
+              <div className="mb-2">
                 {pokemon.pokemonType.map((type) => (
                   <Badge
                     key={type}
@@ -89,11 +93,11 @@ export default function PokemonComponent({ pokemon }: Props) {
             ))}
           </ListGroup>
 
-          {/* Evolution Section */}
+          {/* Evolution */}
           <Row className="mt-4">
             <Col>
               <h5>Evolution Chain</h5>
-              <p>
+              <p className="fs-6">
                 {pokemon.evolutionFamily.map((name, idx) => (
                   <Fragment key={name}>
                     <Badge bg="secondary" className="me-1">
@@ -105,11 +109,13 @@ export default function PokemonComponent({ pokemon }: Props) {
                   </Fragment>
                 ))}
               </p>
-              <p>
-                <strong>Previous Evolution:</strong> {pokemon.devolution || "—"}
+              <p className="text-muted">
+                <strong>Devolution:</strong>{" "}
+                {pokemon.devolution || <span>—</span>}
               </p>
-              <p>
-                <strong>Next Evolution:</strong> {pokemon.evolution || "—"}
+              <p className="text-muted">
+                <strong>Evolution:</strong>{" "}
+                {pokemon.evolution || <span>—</span>}
               </p>
             </Col>
           </Row>
