@@ -1,59 +1,120 @@
+import { Fragment } from "react";
 import Pokemon from "@/model/pokemon";
-import { Row, Col, Container, Image, Card, Badge, ListGroup } from 'react-bootstrap';
+import {
+  Card,
+  Row,
+  Col,
+  Image,
+  Badge,
+  ProgressBar,
+  ListGroup,
+  Container,
+} from "react-bootstrap";
 
+type Props = {
+  pokemon: Pokemon;
+};
 
-type Props ={
-   pokemon: Pokemon;
-}
+const typeColors: Record<string, string> = {
+  Fire: "danger",
+  Water: "primary",
+  Grass: "success",
+  Electric: "warning",
+  Psychic: "info",
+  Ice: "info",
+  Ground: "secondary",
+  Rock: "dark",
+  Flying: "primary",
+  Bug: "success",
+  Normal: "secondary",
+  Fighting: "danger",
+  Ghost: "dark",
+  Poison: "purple",
+  Dark: "dark",
+  Dragon: "indigo",
+  Steel: "secondary",
+  Fairy: "pink",
+};
 
-
-export default function PokemonComponent(props : Props) {
-    const {pokemon} = props;
-
-    return (
+export default function PokemonComponent({ pokemon }: Props) {
+  return (
     <Container className="mt-4">
-        <Row className="justify-content-md-center mb-4">
-            <Col md="auto"><h1>{pokemon.pokemonName}</h1></Col>
-        </Row>
-
-        <Row>
-            <Col md={4}>
-                <Image src={pokemon.mainImage} fluid rounded />
+      <Card className="shadow-lg rounded-4">
+        <Card.Body>
+          {/* Header and Image */}
+          <Row className="align-items-center">
+            <Col md={4} className="text-center mb-3 mb-md-0">
+              <Image
+                src={pokemon.mainImage}
+                fluid
+                roundedCircle
+                style={{ maxHeight: "200px" }}
+              />
             </Col>
-
             <Col md={8}>
-                <Card>
-                    <Card.Header as="h5">Basic Information</Card.Header>
-                    <ListGroup variant="flush">
-                    <ListGroup.Item><strong>Number:</strong> #{pokemon.pokemonNumber}</ListGroup.Item>
-                    <ListGroup.Item>
-                        <strong>Type:</strong>{" "}
-                        {pokemon.pokemonType.map((type, index) => (
-                        <Badge bg="primary" className="me-1" key={index}>{type}</Badge>
-                        ))}
-                    </ListGroup.Item>
-                    <ListGroup.Item><strong>Evolution:</strong> {pokemon.evolution || "N/A"}</ListGroup.Item>
-                    <ListGroup.Item><strong>Devolution:</strong> {pokemon.devolution || "N/A"}</ListGroup.Item>
-                    <ListGroup.Item>
-                        <strong>Evolution Family:</strong>{" "}
-                        {pokemon.evolutionFamily.map((name, i) => (
-                        <Badge bg="secondary" className="me-1" key={i}>{name}</Badge>
-                        ))}
-                    </ListGroup.Item>
-                </ListGroup>
-            </Card>
-
-            <Card className="mt-3">
-                <Card.Header as="h5">Stats</Card.Header>
-                    <ListGroup variant="flush">
-                    <ListGroup.Item><strong>HP:</strong> ❤️ {pokemon.healthPoints}</ListGroup.Item>
-                    <ListGroup.Item><strong>Attack:</strong> ⚔️ {pokemon.attack}</ListGroup.Item>
-                    <ListGroup.Item><strong>Defense:</strong> 🛡️ {pokemon.defense}</ListGroup.Item>
-                    <ListGroup.Item><strong>Speed:</strong> 💨 {pokemon.speed}</ListGroup.Item>
-                </ListGroup>
-            </Card>
+              <h2 className="display-5">{pokemon.pokemonName}</h2>
+              <div>
+                {pokemon.pokemonType.map((type) => (
+                  <Badge
+                    key={type}
+                    bg={typeColors[type] || "secondary"}
+                    className="me-2"
+                  >
+                    {type}
+                  </Badge>
+                ))}
+              </div>
             </Col>
-        </Row>
+          </Row>
+
+          {/* Stats Section */}
+          <ListGroup variant="flush" className="mt-4">
+            {[
+              { label: "HP", value: pokemon.healthPoints, variant: "success" },
+              { label: "Attack", value: pokemon.attack, variant: "danger" },
+              { label: "Defense", value: pokemon.defense, variant: "info" },
+              { label: "Speed", value: pokemon.speed, variant: "warning" },
+            ].map((stat) => (
+              <ListGroup.Item key={stat.label}>
+                <strong>{stat.label}:</strong>
+                <ProgressBar
+                  now={stat.value}
+                  max={255}
+                  label={`${stat.value}`}
+                  className="mt-1"
+                  variant={stat.variant}
+                  animated
+                />
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+
+          {/* Evolution Section */}
+          <Row className="mt-4">
+            <Col>
+              <h5>Evolution Chain</h5>
+              <p>
+                {pokemon.evolutionFamily.map((name, idx) => (
+                  <Fragment key={name}>
+                    <Badge bg="secondary" className="me-1">
+                      {name}
+                    </Badge>
+                    {idx < pokemon.evolutionFamily.length - 1 && (
+                      <span className="me-1">➝</span>
+                    )}
+                  </Fragment>
+                ))}
+              </p>
+              <p>
+                <strong>Previous Evolution:</strong> {pokemon.devolution || "—"}
+              </p>
+              <p>
+                <strong>Next Evolution:</strong> {pokemon.evolution || "—"}
+              </p>
+            </Col>
+          </Row>
+        </Card.Body>
+      </Card>
     </Container>
-   );
+  );
 }
