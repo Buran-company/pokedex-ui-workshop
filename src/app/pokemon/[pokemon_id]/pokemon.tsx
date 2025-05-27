@@ -6,6 +6,13 @@ type Props = {
   pokemon: Pokemon;
 };
 
+const statKeys: (keyof Pick<Pokemon, "healthPoints" | "attack" | "defense" | "speed">)[] = [
+  "healthPoints",
+  "attack",
+  "defense",
+  "speed",
+];
+
 const typeColors: Record<string, string> = {
   Fire: "#fd7d24",
   Water: "#4592c4",
@@ -45,18 +52,18 @@ export default function PokemonComponent({ pokemon }: Props) {
             </div>
 
             <div className={styles.stats}>
-            {["healthPoints", "attack", "defense", "speed"].map((key) => (
+            {statKeys.map((key) => (
                 <div key={key} className={styles.stat}>
                 <span className={styles.label}>{key.toUpperCase()}</span>
                 <div className={styles.bar}>
                     <div
                     className={styles.fill}
                     style={{
-                        width: `${Math.min((pokemon as any)[key] / 2.5, 100)}%`,
+                        width: `${Math.min(pokemon[key] / 2.5, 100)}%`,
                     }}
                     />
                 </div>
-                <span className={styles.value}>{(pokemon as any)[key]}</span>
+                <span className={styles.value}>{pokemon[key]}</span>
                 </div>
             ))}
             </div>
